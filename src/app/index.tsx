@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
   return (
@@ -7,6 +8,13 @@ export default function HomeScreen() {
       <Text style={styles.subtitle}>
         milkshakes deliciosos com entrega na sua porta!🍹
       </Text>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/menu")}
+      >
+        <Text style={styles.buttonText}>Começar a pedir 🥤</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -15,7 +23,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#c2e2ff",
+    backgroundColor: "#a2c7ff",
   },
   title: {
     fontSize: 32,
@@ -26,5 +34,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 10,
     textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
