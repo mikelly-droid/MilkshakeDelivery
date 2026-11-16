@@ -178,10 +178,6 @@ export default function MenuScreen() {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.logo}>Milkshake Delivery 🥤</Text>
-          <Text style={styles.localizacao}>
-            Seu milkshake favorito chega até você! 🛵
-          </Text>
           <Text style={styles.titulo}>Olá! O que vamos pedir hoje?</Text>
           <Text style={styles.subtitulo}>Escolha seu sabor favorito 💗</Text>
         </View>
