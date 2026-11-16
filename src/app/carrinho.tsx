@@ -1,34 +1,30 @@
 import { useRouter } from "expo-router";
 import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useCarrinho } from "../context/CarrinhoContext";
 
 export default function CarrinhoScreen() {
   const router = useRouter();
 
-  const { itens, adicionar, diminuir, remover, limpar, total } = useCarrinho();
+  const { itens, aumentar, diminuir, remover, limpar, total } = useCarrinho();
 
   function finalizarPedido() {
     Alert.alert(
       "Confirmar pedido 💗",
       `Seu pedido ficou em R$ ${total.toFixed(2).replace(".", ",")}. Deseja confirmar?`,
       [
-        {
-          text: "Voltar",
-          style: "cancel",
-        },
+        { text: "Voltar", style: "cancel" },
         {
           text: "Confirmar",
           onPress: () => {
             limpar();
-
             Alert.alert(
               "Pedido realizado! 🥤",
               "Seu pedido foi confirmado com sucesso!",
@@ -75,7 +71,7 @@ export default function CarrinhoScreen() {
         <>
           <ScrollView style={styles.lista} showsVerticalScrollIndicator={false}>
             {itens.map((item) => (
-              <View key={item.id} style={styles.card}>
+              <View key={item.itemId} style={styles.card}>
                 <Image
                   source={item.imagem}
                   style={styles.imagem}
@@ -86,13 +82,41 @@ export default function CarrinhoScreen() {
                   <Text style={styles.nome}>{item.nome}</Text>
 
                   <Text style={styles.preco}>
-                    R$ {item.preco.toFixed(2).replace(".", ",")}
+                    R${" "}
+                    {(item.precoUnitario * item.quantidade)
+                      .toFixed(2)
+                      .replace(".", ",")}
                   </Text>
+
+                  <Text style={styles.detalhe}>
+                    Leite: {item.personalizacao.leite}
+                  </Text>
+
+                  {item.personalizacao.adicionais.length > 0 && (
+                    <Text style={styles.detalhe}>
+                      Adicionais:{" "}
+                      {item.personalizacao.adicionais
+                        .map((adicional) => adicional.nome)
+                        .join(", ")}
+                    </Text>
+                  )}
+
+                  {item.personalizacao.retirar.length > 0 && (
+                    <Text style={styles.detalhe}>
+                      Sem: {item.personalizacao.retirar.join(", ")}
+                    </Text>
+                  )}
+
+                  {item.personalizacao.observacao !== "" && (
+                    <Text style={styles.detalhe}>
+                      Obs.: {item.personalizacao.observacao}
+                    </Text>
+                  )}
 
                   <View style={styles.controles}>
                     <TouchableOpacity
                       style={styles.botaoQuantidade}
-                      onPress={() => diminuir(item.id)}
+                      onPress={() => diminuir(item.itemId)}
                     >
                       <Text style={styles.textoQuantidade}>−</Text>
                     </TouchableOpacity>
@@ -101,12 +125,12 @@ export default function CarrinhoScreen() {
 
                     <TouchableOpacity
                       style={styles.botaoQuantidade}
-                      onPress={() => adicionar(item)}
+                      onPress={() => aumentar(item.itemId)}
                     >
                       <Text style={styles.textoQuantidade}>+</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => remover(item.id)}>
+                    <TouchableOpacity onPress={() => remover(item.itemId)}>
                       <Text style={styles.remover}>Remover</Text>
                     </TouchableOpacity>
                   </View>
@@ -124,10 +148,7 @@ export default function CarrinhoScreen() {
                   "Deseja remover todos os produtos?",
                   [
                     { text: "Cancelar", style: "cancel" },
-                    {
-                      text: "Sim, esvaziar",
-                      onPress: limpar,
-                    },
+                    { text: "Sim, esvaziar", onPress: limpar },
                   ],
                 )
               }
@@ -160,7 +181,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff8fb",
   },
-
   header: {
     backgroundColor: "#fdc1d8",
     paddingTop: 55,
@@ -169,32 +189,27 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
   },
-
   voltar: {
     color: "#790046",
     fontSize: 15,
     fontWeight: "bold",
   },
-
   titulo: {
     color: "#460037",
     fontSize: 24,
     fontWeight: "bold",
     marginTop: 20,
   },
-
   subtitulo: {
     color: "#790046",
     fontSize: 13,
     marginTop: 5,
   },
-
   lista: {
     flex: 1,
     paddingHorizontal: 15,
     paddingTop: 15,
   },
-
   card: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
@@ -204,39 +219,39 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#f3dce7",
   },
-
   imagem: {
-    width: 105,
+    width: 95,
     height: 115,
     borderRadius: 12,
   },
-
   informacoes: {
     flex: 1,
     paddingLeft: 12,
     justifyContent: "center",
   },
-
   nome: {
     color: "#460037",
     fontSize: 14,
     fontWeight: "bold",
   },
-
   preco: {
     color: "#790046",
     fontSize: 15,
     fontWeight: "bold",
-    marginTop: 7,
+    marginTop: 5,
   },
-
+  detalhe: {
+    color: "#927889",
+    fontSize: 11,
+    marginTop: 4,
+  },
   controles: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: 12,
     gap: 10,
+    flexWrap: "wrap",
   },
-
   botaoQuantidade: {
     backgroundColor: "#fdc1d8",
     width: 27,
@@ -245,99 +260,83 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   textoQuantidade: {
     color: "#790046",
     fontSize: 18,
     fontWeight: "bold",
   },
-
   quantidade: {
     color: "#460037",
     fontWeight: "bold",
   },
-
   remover: {
     color: "#b33b69",
     fontSize: 11,
     fontWeight: "bold",
   },
-
   resumo: {
     backgroundColor: "#ffffff",
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: "#f1dce6",
   },
-
   limpar: {
     alignSelf: "flex-end",
     marginBottom: 15,
   },
-
   textoLimpar: {
     color: "#b33b69",
     fontSize: 12,
     fontWeight: "bold",
   },
-
   linhaTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 18,
   },
-
   textoTotal: {
     color: "#460037",
     fontSize: 16,
     fontWeight: "bold",
   },
-
   valorTotal: {
     color: "#790046",
     fontSize: 21,
     fontWeight: "bold",
   },
-
   botaoFinalizar: {
     backgroundColor: "#790046",
     padding: 16,
     borderRadius: 13,
     alignItems: "center",
   },
-
   textoBotao: {
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "bold",
   },
-
   vazio: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 25,
   },
-
   emojiVazio: {
     fontSize: 65,
   },
-
   tituloVazio: {
     color: "#460037",
     fontSize: 19,
     fontWeight: "bold",
     marginTop: 15,
   },
-
   textoVazio: {
     color: "#927889",
     fontSize: 13,
     marginTop: 8,
     textAlign: "center",
   },
-
   botaoVoltar: {
     backgroundColor: "#790046",
     paddingVertical: 14,

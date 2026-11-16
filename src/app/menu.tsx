@@ -124,12 +124,35 @@ const categorias = [
   { nome: "Especiais", emoji: "✨" },
 ];
 
+const tiposLeite = ["Integral", "Sem lactose", "Vegetal"];
+
+const opcoesAdicionais = [
+  { nome: "Chantilly extra", preco: 2 },
+  { nome: "Granulado", preco: 1.5 },
+  { nome: "Calda extra", preco: 2 },
+  { nome: "Oreo", preco: 2.5 },
+  { nome: "Morango", preco: 2.5 },
+];
+
+const opcoesRetirar = ["Chantilly", "Cobertura", "Granulado"];
+
 export default function MenuScreen() {
   const router = useRouter();
   const { adicionar, itens } = useCarrinho();
   const [pesquisa, setPesquisa] = useState("");
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
   const [modalVisivel, setModalVisivel] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState<
+    (typeof produtos)[number] | null
+  >(null);
+  const [leiteSelecionado, setLeiteSelecionado] = useState("Integral");
+  const [adicionaisSelecionados, setAdicionaisSelecionados] = useState<
+    { nome: string; preco: number }[]
+  >([]);
+  const [ingredientesRetirados, setIngredientesRetirados] = useState<string[]>(
+    [],
+  );
+  const [observacao, setObservacao] = useState("");
   const [categoriaTemporaria, setCategoriaTemporaria] = useState("Todos");
   const [ordemTemporaria, setOrdemTemporaria] = useState("padrao");
   const [ordem, setOrdem] = useState("padrao");
@@ -175,11 +198,11 @@ export default function MenuScreen() {
   }
 
   function selecionarProduto(produto: (typeof produtos)[number]) {
-    adicionar(produto);
-    Alert.alert(
-      "Adicionado à cestinha! 💗",
-      `${produto.nome} foi adicionado ao seu pedido.`,
-    );
+    setProdutoSelecionado(produto);
+    setLeiteSelecionado("Integral");
+    setAdicionaisSelecionados([]);
+    setIngredientesRetirados([]);
+    setObservacao("");
   }
 
   return (
@@ -369,8 +392,6 @@ export default function MenuScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* MODAL DE FILTROS */}
-
       <Modal
         visible={modalVisivel}
 
@@ -462,6 +483,180 @@ export default function MenuScreen() {
             >
               <Text style={styles.textoLimparModal}>Limpar filtros</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        visible={produtoSelecionado !== null}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setProdutoSelecionado(null)}
+      >
+        <View style={styles.fundoModal}>
+          <View style={styles.conteudoModal}>
+            <View style={styles.cabecalhoModal}>
+              <Text style={styles.tituloModal}>
+                Personalize seu milkshake 💗
+              </Text>
+
+              <TouchableOpacity onPress={() => setProdutoSelecionado(null)}>
+                <Text style={styles.fecharModal}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {produtoSelecionado && (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={styles.nomeProduto}>
+                  {produtoSelecionado.nome}
+                </Text>
+
+                <Text style={styles.tituloFiltro}>🥛 Tipo de leite</Text>
+
+                {tiposLeite.map((leite) => (
+                  <TouchableOpacity
+                    key={leite}
+                    style={styles.opcaoOrdem}
+                    onPress={() => setLeiteSelecionado(leite)}
+                  >
+                    <Text style={styles.textoOrdem}>{leite}</Text>
+                    <Text style={styles.marcacao}>
+                      {leiteSelecionado === leite ? "🔘" : "⚪"}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                <Text style={styles.tituloFiltro}>🍫 Adicionais</Text>
+
+                {opcoesAdicionais.map((adicional) => (
+                  <TouchableOpacity
+                    key={adicional.nome}
+                    style={styles.opcaoOrdem}
+                    onPress={() => {
+                      const jaSelecionado = adicionaisSelecionados.some(
+                        (item) => item.nome === adicional.nome,
+                      );
+
+                      if (jaSelecionado) {
+                        setAdicionaisSelecionados(
+                          adicionaisSelecionados.filter(
+                            (item) => item.nome !== adicional.nome,
+                          ),
+                        );
+                      } else {
+                        setAdicionaisSelecionados([
+                          ...adicionaisSelecionados,
+                          adicional,
+                        ]);
+                      }
+                    }}
+                  >
+                    <Text style={styles.textoOrdem}>
+                      {adicional.nome} (+ R${" "}
+                      {adicional.preco.toFixed(2).replace(".", ",")})
+                    </Text>
+
+                    <Text style={styles.marcacao}>
+                      {adicionaisSelecionados.some(
+                        (item) => item.nome === adicional.nome,
+                      )
+                        ? "☑️"
+                        : "⬜"}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                <Text style={styles.tituloFiltro}>🚫 Retirar ingredientes</Text>
+
+                {opcoesRetirar.map((ingrediente) => (
+                  <TouchableOpacity
+                    key={ingrediente}
+                    style={styles.opcaoOrdem}
+                    onPress={() => {
+                      if (ingredientesRetirados.includes(ingrediente)) {
+                        setIngredientesRetirados(
+                          ingredientesRetirados.filter(
+                            (item) => item !== ingrediente,
+                          ),
+                        );
+                      } else {
+                        setIngredientesRetirados([
+                          ...ingredientesRetirados,
+                          ingrediente,
+                        ]);
+                      }
+                    }}
+                  >
+                    <Text style={styles.textoOrdem}>{ingrediente}</Text>
+
+                    <Text style={styles.marcacao}>
+                      {ingredientesRetirados.includes(ingrediente)
+                        ? "☑️"
+                        : "⬜"}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                <Text style={styles.tituloFiltro}>📝 Alguma observação?</Text>
+
+                <TextInput
+                  style={styles.inputPesquisa}
+                  placeholder="Ex.: pouco chantilly, mais calda..."
+                  placeholderTextColor="#9b7588"
+                  value={observacao}
+                  onChangeText={setObservacao}
+                  multiline
+                />
+
+                <Text style={styles.preco}>
+                  Preço: R${" "}
+                  {(
+                    (produtoSelecionado?.preco ?? 0) +
+                    adicionaisSelecionados.reduce(
+                      (soma, item) => soma + item.preco,
+                      0,
+                    )
+                  )
+                    .toFixed(2)
+                    .replace(".", ",")}
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.botaoAplicar}
+                  onPress={() => {
+                    if (!produtoSelecionado) return;
+
+                    const precoFinal =
+                      produtoSelecionado.preco +
+                      adicionaisSelecionados.reduce(
+                        (soma, item) => soma + item.preco,
+                        0,
+                      );
+
+                    adicionar({
+                      ...produtoSelecionado,
+                      personalizacao: {
+                        leite: leiteSelecionado,
+                        adicionais: adicionaisSelecionados,
+                        retirar: ingredientesRetirados,
+                        observacao: observacao,
+                      },
+                      precoUnitario: precoFinal,
+                    });
+
+                    setProdutoSelecionado(null);
+
+                    Alert.alert(
+                      "Adicionado à cestinha! 💗",
+                      `${produtoSelecionado.nome} foi adicionado ao seu pedido.`,
+                    );
+                  }}
+                >
+                  <Text style={styles.textoBotaoAplicar}>
+                    Adicionar à cestinha 💗
+                  </Text>
+                </TouchableOpacity>
+              </ScrollView>
+            )}
           </View>
         </View>
       </Modal>

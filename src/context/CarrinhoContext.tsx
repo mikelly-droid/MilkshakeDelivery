@@ -1,55 +1,84 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
+type Adicional = {
+  nome: string;
+  preco: number;
+};
+
+type Personalizacao = {
+  leite: string;
+  adicionais: Adicional[];
+  retirar: string[];
+  observacao: string;
+};
+
 type ProdutoCarrinho = {
   id: number;
   nome: string;
   preco: number;
   imagem: any;
+  personalizacao: Personalizacao;
+  precoUnitario: number;
 };
+
 type ItemCarrinho = ProdutoCarrinho & {
+  itemId: string;
   quantidade: number;
 };
+
 type CarrinhoContextType = {
   itens: ItemCarrinho[];
   adicionar: (produto: ProdutoCarrinho) => void;
-  diminuir: (id: number) => void;
-  remover: (id: number) => void;
+  aumentar: (itemId: string) => void;
+  diminuir: (itemId: string) => void;
+  remover: (itemId: string) => void;
   limpar: () => void;
   total: number;
 };
+
 const CarrinhoContext = createContext<CarrinhoContextType | undefined>(
   undefined,
 );
+
 export function CarrinhoProvider({ children }: { children: ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
+
   function adicionar(produto: ProdutoCarrinho) {
-    setItens((listaAtual) => {
-      const jaExiste = listaAtual.find((item) => item.id === produto.id);
+    const novoItem: ItemCarrinho = {
+      ...produto,
+      itemId: `${produto.id}-${Date.now()}-${Math.random()}`,
+      quantidade: 1,
+    };
 
-      if (jaExiste) {
-        return listaAtual.map((item) =>
-          item.id === produto.id
-            ? { ...item, quantidade: item.quantidade + 1 }
-            : item,
-        );
-      }
-
-      return [...listaAtual, { ...produto, quantidade: 1 }];
-    });
+    setItens((listaAtual) => [...listaAtual, novoItem]);
   }
 
-  function diminuir(id: number) {
+  function aumentar(itemId: string) {
+    setItens((listaAtual) =>
+      listaAtual.map((item) =>
+        item.itemId === itemId
+          ? { ...item, quantidade: item.quantidade + 1 }
+          : item,
+      ),
+    );
+  }
+
+  function diminuir(itemId: string) {
     setItens((listaAtual) =>
       listaAtual
         .map((item) =>
-          item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item,
+          item.itemId === itemId
+            ? { ...item, quantidade: item.quantidade - 1 }
+            : item,
         )
         .filter((item) => item.quantidade > 0),
     );
   }
 
-  function remover(id: number) {
-    setItens((listaAtual) => listaAtual.filter((item) => item.id !== id));
+  function remover(itemId: string) {
+    setItens((listaAtual) =>
+      listaAtual.filter((item) => item.itemId !== itemId),
+    );
   }
 
   function limpar() {
@@ -57,13 +86,21 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
   }
 
   const total = itens.reduce(
-    (soma, item) => soma + item.preco * item.quantidade,
+    (soma, item) => soma + item.precoUnitario * item.quantidade,
     0,
   );
 
   return (
     <CarrinhoContext.Provider
-      value={{ itens, adicionar, diminuir, remover, limpar, total }}
+      value={{
+        itens,
+        adicionar,
+        aumentar,
+        diminuir,
+        remover,
+        limpar,
+        total,
+      }}
     >
       {children}
     </CarrinhoContext.Provider>
