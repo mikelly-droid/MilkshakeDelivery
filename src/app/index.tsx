@@ -21,7 +21,7 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/menu")}
+        onPress={() => router.push("/login")}
       >
         <Text style={styles.buttonText}>Começar a pedir </Text>
       </TouchableOpacity>
