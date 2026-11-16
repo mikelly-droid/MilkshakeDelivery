@@ -1,5 +1,7 @@
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+    Alert,
     StyleSheet,
     Text,
     TextInput,
@@ -8,6 +10,36 @@ import {
 } from "react-native";
 
 export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  function handleLogin() {
+    if (!email.trim() || !senha) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      Alert.alert("E-mail inválido", "Digite um e-mail válido.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      Alert.alert(
+        "Senha inválida",
+        "A senha precisa ter pelo menos 6 caracteres.",
+      );
+      return;
+    }
+
+    Alert.alert("Login realizado!", "Bem-vindo(a) ao Milkshake Delivery!", [
+      {
+        text: "Continuar",
+        onPress: () => router.replace("/menu"),
+      },
+    ]);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.emoji}>🍓</Text>
@@ -23,14 +55,19 @@ export default function LoginScreen() {
         placeholder="Seu e-mail"
         keyboardType="email-address"
         autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
 
-      <TextInput style={styles.input} placeholder="Sua senha" secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Sua senha"
+        secureTextEntry
+        value={senha}
+        onChangeText={setSenha}
+      />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/menu")}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Entrar 🛵</Text>
       </TouchableOpacity>
 

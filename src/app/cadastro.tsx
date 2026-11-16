@@ -1,5 +1,7 @@
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+    Alert,
     StyleSheet,
     Text,
     TextInput,
@@ -8,9 +10,46 @@ import {
 } from "react-native";
 
 export default function CadastroScreen() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+
+  function handleCadastro() {
+    if (!nome.trim() || !email.trim() || !senha || !confirmarSenha) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      Alert.alert("E-mail inválido", "Digite um e-mail válido.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      Alert.alert(
+        "Senha inválida",
+        "A senha precisa ter pelo menos 6 caracteres.",
+      );
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      Alert.alert("Senhas diferentes", "As senhas não coincidem.");
+      return;
+    }
+
+    Alert.alert("Cadastro realizado!", "Sua conta foi criada com sucesso!", [
+      {
+        text: "Continuar",
+        onPress: () => router.replace("/menu"),
+      },
+    ]);
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.emoji}>🍓</Text>
+      <Text style={styles.emoji}>🧋</Text>
 
       <Text style={styles.title}>Crie sua conta!</Text>
 
@@ -18,31 +57,39 @@ export default function CadastroScreen() {
         Cadastre-se para aproveitar nossos milkshakes!
       </Text>
 
-      <TextInput style={styles.input} placeholder="Nome completo" />
+      <TextInput
+        style={styles.input}
+        placeholder="Nome completo"
+        value={nome}
+        onChangeText={setNome}
+      />
 
       <TextInput
         style={styles.input}
         placeholder="Seu e-mail"
         keyboardType="email-address"
         autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Crie uma senha"
         secureTextEntry
+        value={senha}
+        onChangeText={setSenha}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Confirme sua senha"
         secureTextEntry
+        value={confirmarSenha}
+        onChangeText={setConfirmarSenha}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/menu")}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleCadastro}>
         <Text style={styles.buttonText}>Criar conta 🛵</Text>
       </TouchableOpacity>
 
@@ -58,7 +105,7 @@ export default function CadastroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fdc1d8",
+    backgroundColor: "#ffa9ca",
     justifyContent: "center",
     alignItems: "center",
     padding: 25,
