@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
@@ -10,6 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useCarrinho } from "../context/CarrinhoContext";
+
 const produtos = [
   {
     id: 1,
@@ -122,6 +125,8 @@ const categorias = [
 ];
 
 export default function MenuScreen() {
+  const router = useRouter();
+  const { adicionar, itens } = useCarrinho();
   const [pesquisa, setPesquisa] = useState("");
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
   const [modalVisivel, setModalVisivel] = useState(false);
@@ -168,12 +173,15 @@ export default function MenuScreen() {
     setPesquisa("");
     setModalVisivel(false);
   }
-  function selecionarProduto(nome: string) {
+
+  function selecionarProduto(produto: (typeof produtos)[number]) {
+    adicionar(produto);
     Alert.alert(
-      nome,
-      "A tela de personalização deste milkshake será desenvolvida na próxima etapa!",
+      "Adicionado à cestinha! 💗",
+      `${produto.nome} foi adicionado ao seu pedido.`,
     );
   }
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -288,7 +296,7 @@ export default function MenuScreen() {
                     </Text>
                     <TouchableOpacity
                       style={styles.botaoOpcoes}
-                      onPress={() => selecionarProduto(produto.nome)}
+                      onPress={() => selecionarProduto(produto)}
                     >
                       <Text style={styles.textoBotaoOpcoes}>Ver opções +</Text>
                     </TouchableOpacity>
@@ -342,29 +350,21 @@ export default function MenuScreen() {
 
         <TouchableOpacity
           style={styles.itemMenu}
-
-          onPress={() =>
-            Alert.alert(
-              "Sua Cestinha",
-
-              "Sua cestinha será criada na próxima etapa.",
-            )
-          }
+          onPress={() => router.push("/carrinho")}
         >
           <Text style={styles.iconeMenu}>🛒</Text>
-
-          <Text style={styles.textoMenu}>Cestinha</Text>
+          <Text style={styles.textoMenu}>
+            Cestinha ({itens.reduce((soma, item) => soma + item.quantidade, 0)})
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.itemMenu}
-
           onPress={() =>
             Alert.alert("Perfil", "Sua área de perfil será criada em breve.")
           }
         >
           <Text style={styles.iconeMenu}>👤</Text>
-
           <Text style={styles.textoMenu}>Perfil</Text>
         </TouchableOpacity>
       </View>
@@ -624,65 +624,47 @@ const styles = StyleSheet.create({
 
   imagemBanner: {
     width: 120,
-
     height: "100%",
   },
 
   textoBanner: {
     flex: 1,
-
     justifyContent: "center",
-
     paddingHorizontal: 10,
   },
 
   bannerPequeno: {
     color: "#790046",
-
     fontSize: 9,
-
     fontWeight: "bold",
   },
 
   bannerTitulo: {
     color: "#460037",
-
     fontSize: 17,
-
     fontWeight: "bold",
-
     marginTop: 7,
   },
 
   bannerDescricao: {
     color: "#790046",
-
     fontSize: 11,
-
     marginTop: 5,
   },
 
   categoria: {
     backgroundColor: "#ffffff",
-
     borderRadius: 15,
-
     paddingVertical: 12,
-
     paddingHorizontal: 17,
-
     marginRight: 9,
-
     alignItems: "center",
-
     borderWidth: 1,
-
     borderColor: "#f0d5e1",
   },
 
   categoriaSelecionada: {
     backgroundColor: "#790046",
-
     borderColor: "#790046",
   },
 
@@ -692,11 +674,8 @@ const styles = StyleSheet.create({
 
   textoCategoria: {
     color: "#790046",
-
     fontSize: 12,
-
     marginTop: 5,
-
     fontWeight: "600",
   },
 
@@ -706,47 +685,34 @@ const styles = StyleSheet.create({
 
   linhaTitulo: {
     flexDirection: "row",
-
     justifyContent: "space-between",
-
     alignItems: "center",
   },
 
   quantidade: {
     color: "#9b7588",
-
     fontSize: 12,
-
     marginBottom: 13,
   },
 
   gradeProdutos: {
     flexDirection: "row",
-
     flexWrap: "wrap",
-
     justifyContent: "space-between",
   },
 
   cardProduto: {
     width: "48.5%",
-
     backgroundColor: "#ffffff",
-
     borderRadius: 16,
-
     marginBottom: 15,
-
     overflow: "hidden",
-
     borderWidth: 1,
-
     borderColor: "#f3dce7",
   },
 
   imagemProduto: {
     width: "100%",
-
     height: 175,
   },
 
@@ -756,315 +722,203 @@ const styles = StyleSheet.create({
 
   nomeProduto: {
     color: "#460037",
-
     fontSize: 14,
-
     fontWeight: "bold",
-
     minHeight: 36,
   },
 
   categoriaProduto: {
     color: "#b45c88",
-
     fontSize: 11,
-
     marginTop: 3,
-
     fontWeight: "600",
   },
 
   descricaoProduto: {
     color: "#777777",
-
     fontSize: 11,
-
     marginTop: 7,
-
     minHeight: 43,
   },
 
   linhaPreco: {
     marginTop: 9,
-
     gap: 8,
   },
 
   preco: {
     color: "#790046",
-
     fontSize: 17,
-
     fontWeight: "bold",
   },
 
   botaoOpcoes: {
     backgroundColor: "#790046",
-
     borderRadius: 9,
-
     paddingVertical: 9,
-
     alignItems: "center",
   },
 
   textoBotaoOpcoes: {
     color: "#ffffff",
-
     fontSize: 11,
-
     fontWeight: "bold",
   },
 
   semResultado: {
     alignItems: "center",
-
     paddingVertical: 35,
   },
-
   semResultadoEmoji: {
     fontSize: 40,
   },
-
   semResultadoTitulo: {
     color: "#460037",
-
     fontSize: 16,
-
     fontWeight: "bold",
-
     marginTop: 12,
   },
-
   semResultadoTexto: {
     color: "#777777",
-
     fontSize: 12,
-
     textAlign: "center",
-
     marginTop: 7,
   },
-
   botaoLimpar: {
     backgroundColor: "#790046",
-
     padding: 12,
-
     borderRadius: 10,
-
     marginTop: 15,
   },
-
   textoBotaoLimpar: {
     color: "#ffffff",
-
     fontWeight: "bold",
   },
 
   menuInferior: {
     flexDirection: "row",
-
     backgroundColor: "#ffffff",
-
     justifyContent: "space-around",
-
     paddingTop: 10,
-
     paddingBottom: 20,
-
     borderTopWidth: 1,
-
     borderTopColor: "#f1dce6",
   },
-
   itemMenu: {
     alignItems: "center",
-
     flex: 1,
   },
-
   iconeMenu: {
     fontSize: 21,
   },
-
   textoMenu: {
     color: "#927889",
-
     fontSize: 10,
-
     marginTop: 4,
   },
-
   textoMenuAtivo: {
     color: "#790046",
-
     fontSize: 10,
-
     fontWeight: "bold",
-
     marginTop: 4,
   },
-
   fundoModal: {
     flex: 1,
-
     backgroundColor: "rgba(0,0,0,0.45)",
-
     justifyContent: "flex-end",
   },
-
   conteudoModal: {
     backgroundColor: "#fff8fb",
-
     padding: 22,
-
     borderTopLeftRadius: 25,
-
     borderTopRightRadius: 25,
-
     paddingBottom: 35,
   },
-
   cabecalhoModal: {
     flexDirection: "row",
-
     justifyContent: "space-between",
-
     alignItems: "center",
-
     marginBottom: 25,
   },
-
   tituloModal: {
     color: "#460037",
-
     fontSize: 21,
-
     fontWeight: "bold",
   },
-
   fecharModal: {
     color: "#790046",
-
     fontSize: 22,
-
     fontWeight: "bold",
   },
-
   tituloFiltro: {
     color: "#460037",
-
     fontSize: 16,
-
     fontWeight: "bold",
-
     marginBottom: 12,
-
     marginTop: 5,
   },
-
   opcoesCategorias: {
     flexDirection: "row",
-
     flexWrap: "wrap",
-
     gap: 9,
-
     marginBottom: 22,
   },
-
   opcaoCategoria: {
     paddingVertical: 11,
-
     paddingHorizontal: 13,
-
     borderRadius: 12,
-
     backgroundColor: "#ffffff",
-
     borderWidth: 1,
-
     borderColor: "#ead3df",
   },
-
   opcaoSelecionada: {
     backgroundColor: "#790046",
-
     borderColor: "#790046",
   },
-
   textoOpcaoCategoria: {
     color: "#790046",
-
     fontSize: 12,
-
     fontWeight: "600",
   },
-
   textoOpcaoSelecionada: {
     color: "#ffffff",
   },
-
   opcaoOrdem: {
     flexDirection: "row",
-
     justifyContent: "space-between",
-
     alignItems: "center",
-
     backgroundColor: "#ffffff",
-
     padding: 13,
-
     borderRadius: 11,
-
     marginBottom: 8,
   },
-
   textoOrdem: {
     color: "#460037",
-
     fontSize: 13,
   },
-
   marcacao: {
     fontSize: 16,
   },
-
   botaoAplicar: {
     backgroundColor: "#790046",
-
     padding: 15,
-
     borderRadius: 12,
-
     alignItems: "center",
-
     marginTop: 18,
   },
-
   textoBotaoAplicar: {
     color: "#ffffff",
-
     fontWeight: "bold",
-
     fontSize: 15,
   },
-
   botaoLimparModal: {
     alignItems: "center",
-
     padding: 12,
-
     marginTop: 5,
   },
-
   textoLimparModal: {
     color: "#790046",
-
     fontWeight: "bold",
-
     fontSize: 13,
   },
 });
