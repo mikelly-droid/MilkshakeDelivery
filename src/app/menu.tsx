@@ -212,7 +212,6 @@ export default function MenuScreen() {
           <Text style={styles.titulo}>Olá! O que vamos pedir hoje?</Text>
           <Text style={styles.subtitulo}>Escolha seu sabor favorito 💗</Text>
         </View>
-        {/* PESQUISA E FILTROS */}
         <View style={styles.areaPesquisa}>
           <View style={styles.caixaPesquisa}>
             <Text style={styles.lupa}>🔎</Text>
@@ -363,9 +362,7 @@ export default function MenuScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.itemMenu}
-          onPress={() =>
-            Alert.alert("Pedidos", "Sua área de pedidos será criada em breve.")
-          }
+          onPress={() => router.push("/pedidos")}
         >
           <Text style={styles.iconeMenu}>🧾</Text>
           <Text style={styles.textoMenu}>Pedidos</Text>

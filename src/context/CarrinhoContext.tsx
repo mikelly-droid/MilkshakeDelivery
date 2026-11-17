@@ -26,13 +26,24 @@ type ItemCarrinho = ProdutoCarrinho & {
   quantidade: number;
 };
 
+type Pedido = {
+  id: string;
+  itens: ItemCarrinho[];
+  total: number;
+  pagamento: string;
+  data: string;
+  status: string;
+};
+
 type CarrinhoContextType = {
   itens: ItemCarrinho[];
+  pedidos: Pedido[];
   adicionar: (produto: ProdutoCarrinho) => void;
   aumentar: (itemId: string) => void;
   diminuir: (itemId: string) => void;
   remover: (itemId: string) => void;
   limpar: () => void;
+  registrarPedido: (pagamento: string) => void;
   total: number;
 };
 
@@ -42,6 +53,7 @@ const CarrinhoContext = createContext<CarrinhoContextType | undefined>(
 
 export function CarrinhoProvider({ children }: { children: ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);
 
   function adicionar(produto: ProdutoCarrinho) {
     const novoItem: ItemCarrinho = {
@@ -85,6 +97,29 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
     setItens([]);
   }
 
+  function registrarPedido(pagamento: string) {
+    if (itens.length === 0) return;
+
+    const novoPedido: Pedido = {
+      id: `PED-${Date.now()}`,
+      itens: itens.map((item) => ({
+        ...item,
+        personalizacao: {
+          ...item.personalizacao,
+          adicionais: [...item.personalizacao.adicionais],
+          retirar: [...item.personalizacao.retirar],
+        },
+      })),
+      total,
+      pagamento,
+      data: new Date().toLocaleString("pt-BR"),
+      status: "Confirmado",
+    };
+
+    setPedidos((listaAtual) => [novoPedido, ...listaAtual]);
+    setItens([]);
+  }
+
   const total = itens.reduce(
     (soma, item) => soma + item.precoUnitario * item.quantidade,
     0,
@@ -94,11 +129,13 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
     <CarrinhoContext.Provider
       value={{
         itens,
+        pedidos,
         adicionar,
         aumentar,
         diminuir,
         remover,
         limpar,
+        registrarPedido,
         total,
       }}
     >

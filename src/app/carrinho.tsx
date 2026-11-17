@@ -16,29 +16,15 @@ export default function CarrinhoScreen() {
   const { itens, aumentar, diminuir, remover, limpar, total } = useCarrinho();
 
   function finalizarPedido() {
-    Alert.alert(
-      "Confirmar pedido 💗",
-      `Seu pedido ficou em R$ ${total.toFixed(2).replace(".", ",")}. Deseja confirmar?`,
-      [
-        { text: "Voltar", style: "cancel" },
-        {
-          text: "Confirmar",
-          onPress: () => {
-            limpar();
-            Alert.alert(
-              "Pedido realizado! 🥤",
-              "Seu pedido foi confirmado com sucesso!",
-              [
-                {
-                  text: "Voltar ao cardápio",
-                  onPress: () => router.replace("/menu"),
-                },
-              ],
-            );
-          },
-        },
-      ],
-    );
+    if (itens.length === 0) {
+      Alert.alert(
+        "Cestinha vazia 🥺",
+        "Adicione pelo menos um milkshake antes de continuar.",
+      );
+      return;
+    }
+
+    router.push("/pagamento");
   }
 
   return (
