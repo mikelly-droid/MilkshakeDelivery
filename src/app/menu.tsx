@@ -380,9 +380,7 @@ export default function MenuScreen() {
 
         <TouchableOpacity
           style={styles.itemMenu}
-          onPress={() =>
-            Alert.alert("Perfil", "Sua área de perfil será criada em breve.")
-          }
+          onPress={() => router.push("/perfil")}
         >
           <Text style={styles.iconeMenu}>👤</Text>
           <Text style={styles.textoMenu}>Perfil</Text>

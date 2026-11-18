@@ -64,7 +64,7 @@ export default function PerfilScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.emoji}>🍓</Text>
+      <Text style={styles.emoji}>🥤</Text>
       <Text style={styles.titulo}>Meu perfil</Text>
       <Text style={styles.subtitulo}>
         Suas informações no Milkshake Delivery
