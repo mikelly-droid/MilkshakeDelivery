@@ -1,20 +1,21 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { useCarrinho } from "../context/CarrinhoContext";
 
 export default function CadastroScreen() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-
+  const { cadastrarUsuario } = useCarrinho();
   function handleCadastro() {
     if (!nome.trim() || !email.trim() || !senha || !confirmarSenha) {
       Alert.alert("Atenção", "Preencha todos os campos!");
@@ -36,6 +37,13 @@ export default function CadastroScreen() {
 
     if (senha !== confirmarSenha) {
       Alert.alert("Senhas diferentes", "As senhas não coincidem.");
+      return;
+    }
+
+    const cadastrado = cadastrarUsuario(nome, email, senha);
+
+    if (!cadastrado) {
+      Alert.alert("Atenção", "Já existe uma conta cadastrada nesta sessão.");
       return;
     }
 

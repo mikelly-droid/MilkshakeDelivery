@@ -1,29 +1,29 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { useCarrinho } from "../context/CarrinhoContext";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const { entrar } = useCarrinho();
 
   function handleLogin() {
     if (!email.trim() || !senha) {
       Alert.alert("Atenção", "Preencha todos os campos!");
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       Alert.alert("E-mail inválido", "Digite um e-mail válido.");
       return;
     }
-
     if (senha.length < 6) {
       Alert.alert(
         "Senha inválida",
@@ -31,7 +31,14 @@ export default function LoginScreen() {
       );
       return;
     }
-
+    const logado = entrar(email, senha);
+    if (!logado) {
+      Alert.alert(
+        "Não foi possível entrar",
+        "Confira seu e-mail e senha ou crie uma conta.",
+      );
+      return;
+    }
     Alert.alert("Login realizado!", "Bem-vindo(a) ao Milkshake Delivery!", [
       {
         text: "Continuar",

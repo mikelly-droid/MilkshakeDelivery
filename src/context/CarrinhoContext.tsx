@@ -35,15 +35,29 @@ type Pedido = {
   status: string;
 };
 
+type Usuario = {
+  nome: string;
+  email: string;
+};
+
+type Conta = Usuario & {
+  senha: string;
+};
+
 type CarrinhoContextType = {
   itens: ItemCarrinho[];
   pedidos: Pedido[];
+  usuario: Usuario | null;
   adicionar: (produto: ProdutoCarrinho) => void;
   aumentar: (itemId: string) => void;
   diminuir: (itemId: string) => void;
   remover: (itemId: string) => void;
   limpar: () => void;
   registrarPedido: (pagamento: string) => void;
+  cadastrarUsuario: (nome: string, email: string, senha: string) => boolean;
+  entrar: (email: string, senha: string) => boolean;
+  atualizarUsuario: (nome: string, email: string) => void;
+  sair: () => void;
   total: number;
 };
 
@@ -54,6 +68,8 @@ const CarrinhoContext = createContext<CarrinhoContextType | undefined>(
 export function CarrinhoProvider({ children }: { children: ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [conta, setConta] = useState<Conta | null>(null);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
 
   function adicionar(produto: ProdutoCarrinho) {
     const novoItem: ItemCarrinho = {
@@ -120,6 +136,59 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
     setItens([]);
   }
 
+  function cadastrarUsuario(nome: string, email: string, senha: string) {
+    if (conta) return false;
+
+    const novaConta = {
+      nome: nome.trim(),
+      email: email.trim().toLowerCase(),
+      senha,
+    };
+
+    setConta(novaConta);
+    setUsuario({
+      nome: novaConta.nome,
+      email: novaConta.email,
+    });
+
+    return true;
+  }
+
+  function entrar(email: string, senha: string) {
+    if (!conta) return false;
+
+    if (conta.email !== email.trim().toLowerCase() || conta.senha !== senha) {
+      return false;
+    }
+
+    setUsuario({
+      nome: conta.nome,
+      email: conta.email,
+    });
+
+    return true;
+  }
+
+  function atualizarUsuario(nome: string, email: string) {
+    if (!conta || !usuario) return;
+
+    const dadosAtualizados = {
+      nome: nome.trim(),
+      email: email.trim().toLowerCase(),
+    };
+
+    setConta({
+      ...conta,
+      ...dadosAtualizados,
+    });
+
+    setUsuario(dadosAtualizados);
+  }
+
+  function sair() {
+    setUsuario(null);
+  }
+
   const total = itens.reduce(
     (soma, item) => soma + item.precoUnitario * item.quantidade,
     0,
@@ -130,12 +199,17 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
       value={{
         itens,
         pedidos,
+        usuario,
         adicionar,
         aumentar,
         diminuir,
         remover,
         limpar,
         registrarPedido,
+        cadastrarUsuario,
+        entrar,
+        atualizarUsuario,
+        sair,
         total,
       }}
     >
