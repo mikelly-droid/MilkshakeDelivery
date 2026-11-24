@@ -39,9 +39,14 @@ Pessoas que gostam de milkshakes e desejam escolher e personalizar seus pedidos 
 ## Estrutura do projeto
 
 - `src/app/`: telas e rotas do aplicativo.
-- `src/context/`: gerenciamento compartilhado dos dados do carrinho, usuário e pedidos.
+- `src/components/`: componentes reutilizáveis da interface.
+- `src/constants/`: constantes e configurações de tema.
+- `src/context/`: gerenciamento compartilhado do carrinho, usuário e pedidos.
+- `src/hooks/`: hooks personalizados e recursos relacionados ao tema.
 - `assets/`: imagens e recursos visuais.
-- `package.json`: dependências e configurações do projeto.
+- `package.json`: dependências e scripts do projeto.
+- `app.json`: configurações do Expo.
+- `README.md`: documentação do projeto.
 
 ## Como executar o projeto
 
