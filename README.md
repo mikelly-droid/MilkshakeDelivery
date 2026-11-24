@@ -43,7 +43,7 @@ Pessoas que gostam de milkshakes e desejam escolher e personalizar seus pedidos 
 - `src/constants/`: constantes e configurações de tema.
 - `src/context/`: gerenciamento compartilhado do carrinho, usuário e pedidos.
 - `src/hooks/`: hooks personalizados e recursos relacionados ao tema.
-- `assets/`: imagens e recursos visuais.
+- `assets/images/`: imagens utilizadas no aplicativo, incluindo imagens dos milkshakes e da tela inicial.
 - `package.json`: dependências e scripts do projeto.
 - `app.json`: configurações do Expo.
 - `README.md`: documentação do projeto.
