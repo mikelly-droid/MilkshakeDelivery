@@ -1,56 +1,75 @@
-# Welcome to your Expo app 👋
+# 🥤 Milkshake Delivery
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo de delivery de milkshakes desenvolvido como projeto acadêmico, utilizando React Native e Expo.
 
-## Get started
+## Sobre o projeto
 
-1. Install dependencies
+O Milkshake Delivery é um aplicativo que permite ao usuário conhecer os milkshakes disponíveis, personalizar seus produtos, adicionar itens ao carrinho e realizar pedidos com diferentes opções de pagamento.
 
-   ```bash
-   npm install
-   ```
+## Objetivo
 
-2. Start the app
+Desenvolver um aplicativo de delivery com uma interface simples e intuitiva, proporcionando uma experiência prática de escolha e simulação de pedidos de milkshakes.
 
-   ```bash
-   npx expo start
-   ```
+## Público-alvo
 
-In the output, you'll find options to open the app in a
+Pessoas que gostam de milkshakes e desejam escolher e personalizar seus pedidos de maneira rápida e prática.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tecnologias utilizadas
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- React Native
+- Expo
+- TypeScript
+- Expo Router
+- StyleSheet
+- Git e GitHub
 
-## Get a fresh project
+## Funcionalidades
 
-When you're ready, run:
+- Cadastro e login de usuário (simulados localmente).
+- Visualização do catálogo de milkshakes.
+- Pesquisa e filtro de produtos por categoria.
+- Personalização dos milkshakes.
+- Adição e remoção de produtos do carrinho.
+- Alteração da quantidade de itens.
+- Cálculo automático do valor total.
+- Simulação de pagamento.
+- Registro e visualização do histórico de pedidos.
+- Visualização e edição dos dados do perfil.
 
-```bash
-npm run reset-project
-```
+## Estrutura do projeto
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- `src/app/`: telas e rotas do aplicativo.
+- `src/context/`: gerenciamento compartilhado dos dados do carrinho, usuário e pedidos.
+- `assets/`: imagens e recursos visuais.
+- `package.json`: dependências e configurações do projeto.
 
-### Other setup steps
+## Como executar o projeto
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+1. Instale o Node.js.
+2. Clone o repositório:
 
-## Learn more
+   `git clone https://github.com/mikelly-droid/MilkshakeDelivery.git`
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Entre na pasta do projeto:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+   `cd MilkshakeDelivery`
 
-## Join the community
+4. Instale as dependências:
 
-Join our community of developers creating universal apps.
+   `npm install`
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+5. Inicie o Expo:
+
+   `npx expo start`
+
+6. Abra o aplicativo pelo Expo Go ou por um emulador compatível.
+
+## ⚠️ Observação
+
+Este projeto possui finalidade acadêmica e utiliza dados armazenados temporariamente durante a execução do aplicativo. O cadastro, o login e o pagamento são simulações, não representando um sistema de autenticação ou pagamento real.
+
+## Desenvolvedora
+
+**Mikaele Pereira**
+
+Projeto desenvolvido como atividade acadêmica do curso de Sistemas para Internet.</
