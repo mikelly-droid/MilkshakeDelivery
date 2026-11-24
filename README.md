@@ -75,6 +75,6 @@ Este projeto possui finalidade acadêmica e utiliza dados armazenados temporaria
 
 ## Desenvolvedora
 
-**Mikaele Pereira**
+Mikaele Pereira
 
 Projeto desenvolvido como atividade acadêmica do curso de Sistemas para Internet.</
